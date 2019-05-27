@@ -17,9 +17,7 @@ get-pods:
   box:
       id: alpine
       cmd: /bin/sh
-
   steps:
-
   - bash-template
 
   - kubectl:
@@ -28,3 +26,16 @@ get-pods:
       token: $KUBERNETES_AUTH_TOKEN
       insecure-skip-tls-verify: true
       command: get pods -n kube-system
+
+push-to-acr:
+  box: busybox
+  steps:
+    - internal/docker-push:
+        azure-client-id: $AZURE_CLIENT_ID
+        azure-client-secret: $AZURE_CLIENT_SECRET
+        azure-subscription-id: $AZURE_SUBSCRIPTION_ID
+        azure-tenant-id: $AZURE_TENANT_ID
+        azure-resource-group: $AZURE_RESOURCE_GROUP
+        azure-registry-name: $AZURE_REGISTRY_NAME
+        azure-login-server: $AZURE_LOGIN_SERVER
+        repository: $REPO_NAME
