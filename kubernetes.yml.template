@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: twitter-feed
-        image: ${AZURE__LOGIN_SERVER}/${REPO_NAME}:latest
+        image: ${AZURE_LOGIN_SERVER}/${REPO_NAME}:latest
         imagePullPolicy: Always
         ports:
         - name: twitter-feed
