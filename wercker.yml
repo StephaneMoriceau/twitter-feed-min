@@ -39,3 +39,37 @@ push-to-acr:
         azure-registry-name: $AZURE_REGISTRY_NAME
         azure-login-server: $AZURE_LOGIN_SERVER
         repository: $REPO_NAME
+
+deploy-to-aks:
+  box:
+      id: alpine
+      cmd: /bin/sh
+
+  steps:
+
+  - bash-template
+
+  - kubectl:
+      name: delete secret
+      server: $KUBERNETES_MASTER
+      token: $KUBERNETES_AUTH_TOKEN
+      insecure-skip-tls-verify: true
+      command: delete secret wercker; echo delete registry secret
+
+  - kubectl:
+      name: create secret
+      server: $KUBERNETES_MASTER
+      token: $KUBERNETES_AUTH_TOKEN
+      insecure-skip-tls-verify: true
+      command: create secret docker-registry wercker --docker-server=$AZURE_LOGIN_SERVER --docker-email=nobody@oracle.com --docker-username=$AZURE_CLIENT_ID --docker-password=$AZURE_CLIENT_SECRET; echo create registry secret
+
+  - script:
+      name: "Visualise Kubernetes config"
+      code: cat kubernetes.yml
+
+  - kubectl:
+      name: deploy to kubernetes
+      server: $KUBERNETES_MASTER
+      token: $KUBERNETES_AUTH_TOKEN
+      insecure-skip-tls-verify: true
+      command: apply -f kubernetes.yml
