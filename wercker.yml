@@ -39,6 +39,7 @@ push-to-acr:
         azure-registry-name: $AZURE_REGISTRY_NAME
         azure-login-server: $AZURE_LOGIN_SERVER
         repository: $REPO_NAME
+        cmd: sh target/bin/start
 
 deploy-to-aks:
   box:
